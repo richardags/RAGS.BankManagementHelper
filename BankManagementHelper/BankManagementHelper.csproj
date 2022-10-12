@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>RAGS.BankManagementHelper</PackageId>
+    <Title>BankManagementHelper</Title>
+    <Version>1.0.0</Version>
+    <Authors>richardags</Authors>
+    <Copyright>MIT</Copyright>
+    <Description>This is a Bank Management class that support Martingale, Soros, Sorosgale strategy, very helpfull for traders.</Description>
+    <RepositoryUrl>https://github.com/richardags/RAGS.BankManagementHelper</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+</Project>
