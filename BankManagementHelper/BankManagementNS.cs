@@ -31,7 +31,7 @@ namespace BankManagementHelper
             }
         }
 
-        public enum Type
+        public enum Strategy
         {
             Fixa,
             Martingale,
@@ -174,7 +174,7 @@ namespace BankManagementHelper
         private readonly Martingale martingale = new();
         private readonly Soros soros = new();
         private readonly Sorosgale sorosgale = new();
-        public Type type = Type.Fixa;
+        public Strategy type = Strategy.Fixa;
 
         private decimal amountInitial = 2;
         private readonly List<Order> orders = new();
@@ -217,12 +217,12 @@ namespace BankManagementHelper
 
             switch (type)
             {
-                case Type.Fixa:
+                case Strategy.Fixa:
                     break;
-                case Type.Martingale:
+                case Strategy.Martingale:
                     martingale.Reset();
                     break;
-                case Type.Soros:
+                case Strategy.Soros:
                     if (soros.GetLevel > 0 && soros.Current < soros.GetLevel)
                     {
                         soros.Win();
@@ -232,7 +232,7 @@ namespace BankManagementHelper
                         soros.Reset();
                     }
                     break;
-                case Type.Sorosgale:
+                case Strategy.Sorosgale:
                     if (sorosgale.CurrentSorosLevel < sorosgale.GetSorosLevel)
                     {
                         sorosgale.Win();
@@ -251,9 +251,9 @@ namespace BankManagementHelper
 
             switch (type)
             {
-                case Type.Fixa:
+                case Strategy.Fixa:
                     break;
-                case Type.Martingale:
+                case Strategy.Martingale:
                     if (martingale.GetLevel > 0 && martingale.Current < martingale.GetLevel)
                     {
                         martingale.Win();
@@ -263,10 +263,10 @@ namespace BankManagementHelper
                         martingale.Reset();
                     }
                     break;
-                case Type.Soros:
+                case Strategy.Soros:
                     soros.Reset();
                     break;
-                case Type.Sorosgale:
+                case Strategy.Sorosgale:
                     if (sorosgale.CurrentSorosgaleLevel < sorosgale.GetSorosgaleLevel)
                     {
                         sorosgale.Loss();
@@ -286,13 +286,13 @@ namespace BankManagementHelper
             {
                 switch (type)
                 {
-                    case Type.Fixa:
+                    case Strategy.Fixa:
                         return amountInitial;
-                    case Type.Martingale:
+                    case Strategy.Martingale:
                         return martingale.Current == 0 ? amountInitial : (orders.Last().profit * -1) * 2;
-                    case Type.Soros:
+                    case Strategy.Soros:
                         return soros.Current == 0 ? amountInitial : orders.Last().profit * 2;
-                    case Type.Sorosgale:
+                    case Strategy.Sorosgale:
                         if (sorosgale.CurrentSorosgaleLevel == 0 && sorosgale.CurrentSorosLevel == 0)
                         {
                             return amountInitial;
@@ -399,13 +399,13 @@ namespace BankManagementHelper
         {
             switch (type)
             {
-                case Type.Fixa:
+                case Strategy.Fixa:
                     return string.Format("Mão Fixa: {0}", amountInitial);
-                case Type.Martingale:
+                case Strategy.Martingale:
                     return string.Format("Martingale: {0}/{1}", martingale.Current, martingale.GetLevel);
-                case Type.Soros:
+                case Strategy.Soros:
                     return string.Format("Soros: {0}/{1}", soros.Current, soros.GetLevel);
-                case Type.Sorosgale:
+                case Strategy.Sorosgale:
                     return string.Format("Sorosgale: {0}\nSoros: {1}", sorosgale.GetSorosgaleLevel, sorosgale.GetSorosLevel);
                     return "";
                 default:
