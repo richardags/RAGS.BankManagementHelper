@@ -8,29 +8,33 @@ namespace BankManagementHelper
         {
             return value.ToString("0.00", CultureInfo.InvariantCulture);
         }
+
+        internal static decimal Wins(this List<Order> orders)
+        {
+            return orders.Sum(e => {
+                    if (e.profit > 0)
+                        return e.profit;
+                    else
+                        return 0;
+                });
+        }
+        internal static decimal Losses(this List<Order> orders)
+        {
+            return orders.Sum(e => {
+                if (e.profit < 0)
+                    return e.profit * -1;
+                else
+                    return 0;
+            });
+        }
+        internal static decimal Profit(this List<Order> orders)
+        {
+            return orders.Wins() - orders.Losses();
+        }
     }
 
     public class BankManagementNS
     {
-        public class Order
-        {
-            public decimal amount;
-            public decimal profit;
-
-            public decimal GetSoros { 
-                get
-                {
-                    return amount + profit;
-                }
-            }
-
-            public Order(decimal amount, decimal profit)
-            {
-                this.amount = amount;
-                this.profit = profit;
-            }
-        }
-
         public enum Strategy
         {
             Fixa,
@@ -121,6 +125,8 @@ namespace BankManagementHelper
             private int currentSorosLevel = 0;
             private int currentSorosgaleLevel = 0;
 
+            public List<Order> orders = new();
+
             public int CurrentSorosLevel
             {
                 get
@@ -168,6 +174,7 @@ namespace BankManagementHelper
             {
                 currentSorosLevel = 0;
                 currentSorosgaleLevel = 0;
+                orders.Clear();
             }
         }
 
@@ -179,35 +186,24 @@ namespace BankManagementHelper
         private decimal amountInitial = 2;
         private readonly List<Order> orders = new();
 
-        public decimal Wins
-        {
+        public decimal Wins { 
             get
             {
-                return orders.Sum(e => {
-                    if (e.profit > 0)
-                        return e.profit;
-                    else
-                        return 0;
-                });
+                return orders.Wins();
             }
         }
         public decimal Losses
         {
             get
             {
-                return orders.Sum(e => {
-                    if (e.profit < 0)
-                        return e.profit * -1;
-                    else
-                        return 0;
-                });
+                return orders.Losses();
             }
         }
         public decimal Profit
         {
             get
             {
-                return Wins - Losses;
+                return orders.Profit();
             }
         }
 
@@ -235,11 +231,11 @@ namespace BankManagementHelper
                 case Strategy.Sorosgale:
                     if (sorosgale.CurrentSorosLevel < sorosgale.GetSorosLevel)
                     {
+                        sorosgale.orders.Add(new Order(GetAmount, profit));
                         sorosgale.Win();
                     }
                     else
                     {
-                        orders.Clear();
                         sorosgale.Reset();
                     }
                     break;
@@ -269,11 +265,11 @@ namespace BankManagementHelper
                 case Strategy.Sorosgale:
                     if (sorosgale.CurrentSorosgaleLevel < sorosgale.GetSorosgaleLevel)
                     {
+                        sorosgale.orders.Add(new Order(GetAmount, GetAmount * -1));
                         sorosgale.Loss();
                     }
                     else
                     {
-                        orders.Clear();
                         sorosgale.Reset();
                     }
                     break;
@@ -299,14 +295,14 @@ namespace BankManagementHelper
                         }
                         else if (sorosgale.CurrentSorosgaleLevel == 0 && sorosgale.CurrentSorosLevel > 0)
                         {
-                            return orders.Last().GetSoros;
+                            return sorosgale.orders.Last().GetSoros;
                         }
                         else if (sorosgale.CurrentSorosgaleLevel > 0 && sorosgale.CurrentSorosLevel == 1) {
-                            return (Profit / 2) * -1;
+                            return (sorosgale.orders.Profit() / 2) * -1;
                         }
                         else if (sorosgale.CurrentSorosgaleLevel > 0 && sorosgale.CurrentSorosLevel > 1)
                         {
-                            return orders.Last().GetSoros;
+                            return sorosgale.orders.Last().GetSoros;
                         }
                         else
                         {

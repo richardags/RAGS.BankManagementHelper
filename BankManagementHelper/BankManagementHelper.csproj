@@ -7,7 +7,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>RAGS.BankManagementHelper</PackageId>
     <Title>BankManagementHelper</Title>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>richardags</Authors>
     <Copyright>MIT</Copyright>
     <Description>This is a Bank Management class that support Martingale, Soros, Sorosgale strategy, very helpfull for traders.</Description>
